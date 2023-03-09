@@ -3,8 +3,10 @@ import http from 'http';
 import mongoose from 'mongoose';
 import { config } from './config/config';
 import Logging from './library/Logging';
+import { userRouter } from './routes/user-routes';
 
-const router = express();
+const cors = require('cors');
+const app = express();
 
 mongoose
     .connect(config.mongo.url, { retryWrites: true, w: 'majority' })
@@ -18,7 +20,7 @@ mongoose
     });
 
 const startServer = () => {
-    router.use((req, res, next) => {
+    app.use((req, res, next) => {
         /** Log the Request */
         Logging.info(`Incomming -> Method: [${req.method}] - Url: [${req.url}] - IP [${req.socket.remoteAddress}]`);
         res.on('Finish', () => {
@@ -29,11 +31,12 @@ const startServer = () => {
         next();
     });
 
-    router.use(express.urlencoded({ extended: true }));
-    router.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
+    app.use(cors());
 
     /** Rules of the API */
-    router.use((req, res, next) => {
+    app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
@@ -47,14 +50,15 @@ const startServer = () => {
 
     /** Routes */
 
+    app.use('/users', userRouter);
     /** Healthcheck */
-    router.get('/ping', (req, res, next) => res.status(200).json({ message: 'Up and running!' }));
+    app.get('/ping', (req, res, next) => res.status(200).json({ message: 'Up and running!' }));
 
     /** Error handling */
-    router.use((req, res, next) => {
+    app.use((req, res, next) => {
         const error = new Error('Not found');
         Logging.error(error);
         return res.status(404).json({ message: error.message });
     });
-    http.createServer(router).listen(config.server.port, () => Logging.info(`Server is running on port ${config.server.port}.`));
+    http.createServer(app).listen(config.server.port, () => Logging.info(`Server is running on port ${config.server.port}.`));
 };
