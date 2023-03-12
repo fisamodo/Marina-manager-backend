@@ -50,7 +50,7 @@ const startServer = () => {
 
     /** Routes */
 
-    app.use('/users', userRouter);
+    app.use('/api/users', userRouter);
     /** Healthcheck */
     app.get('/ping', (req, res, next) => res.status(200).json({ message: 'Up and running!' }));
 

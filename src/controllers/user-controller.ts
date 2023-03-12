@@ -35,11 +35,27 @@ export class UserController {
                 if (!validPassword) {
                     return res.status(401).send({ message: 'Invalid Email or Password' });
                 }
-                const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' });
+                const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' }); //extract to env
                 return res.status(200).send({ data: token, message: 'Logged in succesfully' });
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
             }
+        });
+    }
+
+    verifyUser() {
+        return asyncMiddleware(async (req: Request, res: Response) => {
+            const {
+                params: { id }
+            } = req;
+
+            const { _id } = jwt.verify(id, 'privatekey') as any; //extract to env
+            const user = await userRepository.findOne({ _id: _id });
+
+            if (!user) {
+                return res.status(401).send({ data: { id, user: {} }, message: 'User is invalid' });
+            }
+            return res.status(200).send({ data: { id, user }, message: 'Valid user' });
         });
     }
 }
