@@ -26,6 +26,7 @@ export class UserController {
     loginUser() {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
+                console.log('Main');
                 const { email, password } = req.body;
                 const user = await userRepository.findOne({ email: email });
                 if (!user) {
@@ -36,6 +37,7 @@ export class UserController {
                     return res.status(401).send({ message: 'Invalid Email or Password' });
                 }
                 const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' }); //extract to env
+                res.cookie('token', token, { maxAge: 1000 * 1000, httpOnly: true, secure: true });
                 return res.status(200).send({ data: token, message: 'Logged in succesfully' });
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
@@ -45,17 +47,34 @@ export class UserController {
 
     verifyUser() {
         return asyncMiddleware(async (req: Request, res: Response) => {
-            const {
-                params: { id }
-            } = req;
-
-            const { _id } = jwt.verify(id, 'privatekey') as any; //extract to env
+            console.log('Here why: ', req.cookies);
+            const { token } = req.cookies;
+            const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
             const user = await userRepository.findOne({ _id: _id });
 
             if (!user) {
-                return res.status(401).send({ data: { id, user: {} }, message: 'User is invalid' });
+                return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
             }
-            return res.status(200).send({ data: { id, user }, message: 'Valid user' });
+            return res.status(200).send({ data: { token, user }, message: 'Valid user' });
+        });
+    }
+
+    logout() {
+        return asyncMiddleware(async (req: Request, res: Response) => {
+            try {
+                const { token } = req.cookies;
+                const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
+
+                const user = await userRepository.findOne({ _id: _id });
+                if (!user) {
+                    return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
+                }
+
+                res.clearCookie('token');
+                return res.status(200).send({ data: _id, message: 'Logged out succesfully' });
+            } catch (error) {
+                return res.status(500).send({ message: 'Internal server error' });
+            }
         });
     }
 }

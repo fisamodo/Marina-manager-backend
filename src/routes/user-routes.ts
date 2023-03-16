@@ -1,10 +1,12 @@
 import express from 'express';
 import { userController } from '../controllers/user-controller';
+import { allowSignedInUsers } from '../middleware/auth-user-api-access';
 
 const router = express.Router();
 
-router.post('/', userController.registerUser());
 router.post('/login', userController.loginUser());
-router.post('/:id?', userController.verifyUser());
+router.post('/logout', userController.logout());
+router.post('/register', userController.registerUser());
+router.post('/:id', userController.verifyUser());
 
 export const userRouter = router;
