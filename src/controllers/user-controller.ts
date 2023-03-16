@@ -69,12 +69,10 @@ export class UserController {
                 const { token } = req.cookies;
                 if (token) {
                     const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
-
                     const user = await userRepository.findOne({ _id: _id });
                     if (!user) {
                         return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
                     }
-
                     res.clearCookie('token');
                     return res.status(200).send({ data: _id, message: 'Logged out succesfully' });
                 }
