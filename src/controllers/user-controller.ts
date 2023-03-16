@@ -26,7 +26,6 @@ export class UserController {
     loginUser() {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
-                console.log('Main');
                 const { email, password } = req.body;
                 const user = await userRepository.findOne({ email: email });
                 if (!user) {
@@ -38,7 +37,7 @@ export class UserController {
                 }
                 const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' }); //extract to env
                 res.cookie('token', token, { maxAge: 1000 * 1000, httpOnly: true, secure: true });
-                return res.status(200).send({ data: token, message: 'Logged in succesfully' });
+                return res.status(200).send({ data: user, message: 'Logged in succesfully' });
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
             }
@@ -47,15 +46,20 @@ export class UserController {
 
     verifyUser() {
         return asyncMiddleware(async (req: Request, res: Response) => {
-            console.log('Here why: ', req.cookies);
-            const { token } = req.cookies;
-            const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
-            const user = await userRepository.findOne({ _id: _id });
+            try {
+                const { token } = req.cookies;
+                if (token) {
+                    const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
+                    const user = await userRepository.findOne({ _id: _id });
 
-            if (!user) {
-                return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
+                    if (!user) {
+                        return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
+                    }
+                    return res.status(200).send({ data: { token, user }, message: 'Valid user' });
+                }
+            } catch (error) {
+                return res.status(500).send({ message: 'Internal server error' });
             }
-            return res.status(200).send({ data: { token, user }, message: 'Valid user' });
         });
     }
 
@@ -63,15 +67,18 @@ export class UserController {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
                 const { token } = req.cookies;
-                const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
+                if (token) {
+                    const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
 
-                const user = await userRepository.findOne({ _id: _id });
-                if (!user) {
-                    return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
+                    const user = await userRepository.findOne({ _id: _id });
+                    if (!user) {
+                        return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
+                    }
+
+                    res.clearCookie('token');
+                    return res.status(200).send({ data: _id, message: 'Logged out succesfully' });
                 }
-
-                res.clearCookie('token');
-                return res.status(200).send({ data: _id, message: 'Logged out succesfully' });
+                return res.status(200).send({ data: { token }, message: 'User is logged out' });
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
             }
