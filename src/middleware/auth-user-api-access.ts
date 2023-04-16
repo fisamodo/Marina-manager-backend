@@ -9,7 +9,6 @@ export function checkIfUserIsLoggedIn() {
             const { token } = req.cookies;
             const { _id } = jwt.verify(token, 'privatekey') as any; //extract to env
             const user = await userRepository.findOne({ _id: _id });
-            console.log('user: ', user);
             if (!user) {
                 res.clearCookie('token');
                 throw new Error('Unauthorized user');
