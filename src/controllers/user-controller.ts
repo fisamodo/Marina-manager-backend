@@ -3,7 +3,8 @@ import { Request, Response } from 'express';
 import { userRepository } from '../modules/user/user-repository';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
+import { IUser } from '../modules/user/user-model';
+import { config } from './../config/config';
 export class UserController {
     registerUser() {
         return asyncMiddleware(async (req: Request, res: Response) => {
@@ -36,7 +37,7 @@ export class UserController {
                     return res.status(401).send({ message: 'Invalid Email or Password' });
                 }
                 const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' }); //extract to env
-                res.cookie('token', token, { maxAge: 1000 * 1000, httpOnly: true, secure: true });
+                res.cookie('token', token, { maxAge: 3000 * 3000, httpOnly: true, secure: true });
                 return res.status(200).send({ data: user, message: 'Logged in succesfully' });
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
@@ -73,10 +74,22 @@ export class UserController {
                     if (!user) {
                         return res.status(401).send({ data: { token, user: {} }, message: 'User is invalid' });
                     }
-                    res.clearCookie('token');
+                    res.cookie('token', '', { expires: new Date(0) });
                     return res.status(200).send({ data: _id, message: 'Logged out succesfully' });
                 }
                 return res.status(200).send({ data: { token }, message: 'User is logged out' });
+            } catch (error) {
+                return res.status(500).send({ message: 'Internal server error' });
+            }
+        });
+    }
+
+    getAllUsers() {
+        return asyncMiddleware(async (req: Request, res: Response) => {
+            try {
+                const users: IUser[] = await userRepository.find({});
+
+                return res.status(200).send(users);
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
             }

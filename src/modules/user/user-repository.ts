@@ -1,11 +1,14 @@
 import { userModel } from './user-model';
 
 export class UserRepository {
+    find(filter) {
+        return userModel.find(filter);
+    }
     findOne(filter) {
         return userModel.findOne(filter);
     }
-    async create(data) {
-        return await userModel.create(data);
+    create(data) {
+        return userModel.create(data);
     }
 }
 
