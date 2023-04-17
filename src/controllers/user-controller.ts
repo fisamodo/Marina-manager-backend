@@ -38,7 +38,7 @@ export class UserController {
                 }
                 const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' }); //extract to env
                 res.cookie('token', token, { maxAge: 3000 * 3000, httpOnly: true, secure: true });
-                return res.status(200).send({ data: user, message: 'Logged in succesfully' });
+                return res.status(200).send(user);
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
             }
