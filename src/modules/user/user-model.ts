@@ -12,7 +12,7 @@ export interface IUser {
     email: string;
     password: string;
     profileImage: string;
-    usertype: UserType;
+    userType: UserType;
     marinaId: ObjectId;
 }
 
