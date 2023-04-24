@@ -9,5 +9,6 @@ router.post('/logout', userController.logout());
 router.post('/register', userController.registerUser());
 router.get('/verify', userController.verifyUser());
 router.get('/all-users', checkIfUserIsLoggedIn(), userController.getAllUsers());
+router.post('/promote-depromote-user-type/:id', checkIfUserIsLoggedIn(), userController.promoteDepromoteUserType());
 
 export const userRouter = router;

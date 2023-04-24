@@ -10,6 +10,9 @@ export class UserRepository {
     create(data) {
         return userModel.create(data);
     }
+    update(filter, data) {
+        return userModel.updateMany(filter, { $set: data });
+    }
 }
 
 export const userRepository = new UserRepository();

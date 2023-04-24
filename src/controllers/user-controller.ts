@@ -95,6 +95,24 @@ export class UserController {
             }
         });
     }
+
+    promoteDepromoteUserType() {
+        return asyncMiddleware(async (req: Request, res: Response) => {
+            try {
+                const { id } = req.params;
+
+                const user = (await userRepository.findOne({ _id: id })) as IUser;
+                const promotion = user.userType === 'admin' ? 'employee' : 'admin';
+                if (user) {
+                    await userRepository.update({ _id: id }, { userType: promotion });
+                }
+
+                return res.status(200).send(user);
+            } catch (error) {
+                return res.status(500).send({ message: 'Internal server error' });
+            }
+        });
+    }
 }
 
 export const userController = new UserController();
