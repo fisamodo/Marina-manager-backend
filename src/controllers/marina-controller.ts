@@ -7,7 +7,6 @@ export class MarinaController {
     getMarinas() {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
-                console.log('Here');
                 const marinas: IMarina[] = await marinaRepository.find({});
                 return res.status(200).send(marinas);
             } catch (error) {
@@ -20,7 +19,6 @@ export class MarinaController {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
                 const { marina } = req.body;
-                console.log(marina);
                 const marinaData = await marinaRepository.create(marina);
                 return res.status(200).send({});
             } catch (error) {
