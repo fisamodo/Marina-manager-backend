@@ -1,7 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 
 export type UserType = 'admin' | 'employee';
 
@@ -17,7 +16,7 @@ export interface IUser {
 }
 
 const userSchema = new mongoose.Schema({
-    firstName: { type: String, require },
+    firstName: { type: String },
     lastName: { type: String },
     email: { type: String, unique: true },
     password: { type: String },
