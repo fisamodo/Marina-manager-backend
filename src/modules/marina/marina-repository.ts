@@ -11,7 +11,7 @@ export class MarinaRepository {
         return marinaModel.create(data);
     }
     update(filter, data) {
-        return marinaModel.updateMany(filter, { $set: data });
+        return marinaModel.updateOne(filter, { $set: data });
     }
 }
 

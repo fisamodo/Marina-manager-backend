@@ -26,6 +26,23 @@ export class MarinaController {
             }
         });
     }
+
+    editMarina() {
+        return asyncMiddleware(async (req: Request, res: Response) => {
+            try {
+                const { marina } = req.body;
+                const marinaToBeEdited = await marinaRepository.findOne({ _id: marina._id });
+                if (marinaToBeEdited) {
+                    const editedMarina = await marinaRepository.update({ _id: marina._id }, marina);
+                    return res.status(201).send(editedMarina);
+                } else {
+                    return res.status(422).send({ message: 'Unprocessable entity' });
+                }
+            } catch (error) {
+                return res.status(500).send({ message: 'Internal server error' });
+            }
+        });
+    }
 }
 
 export const marinaController = new MarinaController();

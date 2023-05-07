@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/', checkIfUserIsLoggedIn(), marinaController.getMarinas());
 router.post('/', checkIfUserIsLoggedIn(), marinaController.createMarina());
+router.patch('/', checkIfUserIsLoggedIn(), marinaController.editMarina());
 
 export const marinaRouter = router;
