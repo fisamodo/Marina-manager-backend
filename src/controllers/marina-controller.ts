@@ -20,7 +20,7 @@ export class MarinaController {
             try {
                 const { marina } = req.body;
                 const marinaData = await marinaRepository.create(marina);
-                return res.status(200).send({});
+                return res.status(200).send(marinaData);
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });
             }

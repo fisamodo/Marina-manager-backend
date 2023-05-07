@@ -9,7 +9,7 @@ export interface IMarina {
     maxNumberOfSpeedBoats: number;
     maxNumberOfSmallBoats: number;
     maxNumberOfSailBoats: number;
-    maxNumberOfYacths: number;
+    maxNumberOfYachts: number;
     maxNumberOfFerries: number;
 }
 
@@ -20,7 +20,7 @@ const marinaSchema = new mongoose.Schema({
     maxNumberOfSpeedBoats: { type: Number },
     maxNumberOfSmallBoats: { type: Number },
     maxNumberOfSailBoats: { type: Number },
-    maxNumberOfYacths: { type: Number },
+    maxNumberOfYachts: { type: Number },
     maxNumberOfFerries: { type: Number }
 });
 
