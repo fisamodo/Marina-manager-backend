@@ -6,6 +6,7 @@ import Logging from './library/Logging';
 import { userRouter } from './routes/user-routes';
 import cookieParser from 'cookie-parser';
 import { marinaRouter } from './routes/marina-routes';
+import { occupationRouter } from './routes/occupations-routes';
 
 const cors = require('cors');
 const app = express();
@@ -56,6 +57,7 @@ const startServer = () => {
 
     app.use('/api/users', userRouter);
     app.use('/api/marinas', marinaRouter);
+    app.use('/api/occupations', occupationRouter);
     /** Healthcheck */
     app.get('/ping', (req, res, next) => res.status(200).json({ message: 'Up and running!' }));
 

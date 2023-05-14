@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String },
     profileImage: { type: String },
     userType: { type: String, default: 'employee' },
-    marinaId: { type: mongoose.Schema.Types.ObjectId }
+    marinaId: { type: mongoose.Schema.Types.ObjectId, ref: 'marinas' }
 });
 
 userSchema.methods.generateAuthToken = function () {

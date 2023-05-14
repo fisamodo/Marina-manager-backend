@@ -4,8 +4,8 @@ export class MarinaRepository {
     find(filter) {
         return marinaModel.find(filter);
     }
-    findOne(filter) {
-        return marinaModel.findOne(filter);
+    findById(id) {
+        return marinaModel.findById(id);
     }
     create(data) {
         return marinaModel.create(data);

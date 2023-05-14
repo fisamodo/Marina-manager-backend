@@ -8,4 +8,7 @@ router.get('/', checkIfUserIsLoggedIn(), marinaController.getMarinas());
 router.post('/', checkIfUserIsLoggedIn(), marinaController.createMarina());
 router.patch('/', checkIfUserIsLoggedIn(), marinaController.editMarina());
 
+router.get('/occupancy/:marinaId', checkIfUserIsLoggedIn(), marinaController.getMarinaWithCurrentOccupancy());
+router.get('/:marinaId', checkIfUserIsLoggedIn(), marinaController.getMarina());
+
 export const marinaRouter = router;
