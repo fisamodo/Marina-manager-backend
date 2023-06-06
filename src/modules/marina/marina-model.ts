@@ -1,6 +1,14 @@
 import mongoose, { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
+export enum BoatType {
+    SPEED_BOAT,
+    SMALL_BOAT,
+    SAIL_BOAT,
+    YACHT,
+    FERRY
+}
+
 export interface IMarina {
     _id: string;
     marinaName: string;
