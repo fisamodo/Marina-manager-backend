@@ -13,7 +13,7 @@ export function checkIfMarinaOccupationCreationIsPossible() {
         try {
             const { occupation } = req.body;
 
-            const marina = await marinaRepository.findById(occupation.marinaId);
+            const marina: any = await marinaRepository.findById(occupation.marinaId);
             const occupations = await occupationsRepository.find({ marinaId: marina?._id });
 
             const occupancy = marinaService.calculateOccupancyForMarina(occupations, marina, false);

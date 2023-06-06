@@ -46,8 +46,12 @@ export class MarinaController {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
                 const { marina } = req.body;
-                const marinaToBeEdited = await marinaRepository.findById(marina._id);
-                if (marinaToBeEdited) {
+                const marinaToBeEdited: any = await marinaRepository.findById(marina._id);
+                const occupancy: IOccupations[] = await occupationsRepository.find({ marinaId: marina._id });
+                const calculatedOccupancy = marinaService.calculateOccupancyForMarina(occupancy, marinaToBeEdited, false);
+
+                const isEditValid = marinaService.checkBoatCapacityBeforeEditingMarina(marina, calculatedOccupancy);
+                if (isEditValid) {
                     const editedMarina = await marinaRepository.update({ _id: marina._id }, marina);
                     return res.status(201).send(editedMarina);
                 } else {
@@ -63,7 +67,7 @@ export class MarinaController {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
                 const { marinaId } = req.params;
-                const marina = await marinaRepository.findById(marinaId);
+                const marina: any = await marinaRepository.findById(marinaId);
                 const occupations: IOccupations[] = await occupationsRepository.find({ marinaId: marinaId });
                 const occupancy = marinaService.calculateOccupancyForMarina(occupations, marina, true);
                 return res.status(200).send({ marina, occupancy });
