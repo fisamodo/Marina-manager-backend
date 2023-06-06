@@ -4,8 +4,19 @@ export interface IOccupations {
     registrationNumber: string;
     isUsingElectricPort: boolean;
     isUsingWaterPort: boolean;
-    boatType: number;
+    boatType: BoatType;
     marinaId: string;
+}
+
+export interface IOccupationDropdownOption {
+    label: string;
+    value: any;
+}
+
+export interface IOccupancy {
+    amount: number;
+    boatType: string | BoatType;
+    maxAmount: any;
 }
 
 export enum BoatType {
@@ -20,7 +31,7 @@ const occupationsScema = new mongoose.Schema({
     registrationNumber: { type: String },
     isUsingElectricPort: { type: Boolean, default: false },
     isUsingWaterPort: { type: Boolean, defaulst: false },
-    boatType: { type: Number },
+    boatType: { type: Object },
     marinaId: { type: mongoose.Schema.Types.ObjectId, ref: 'marinas' }
 });
 

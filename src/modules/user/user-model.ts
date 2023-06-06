@@ -1,8 +1,12 @@
 import mongoose, { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+import { config } from '../../config/config';
 
-export type UserType = 'admin' | 'employee';
+export enum UserType {
+    EMPLOYEE,
+    ADMIN
+}
 
 export interface IUser {
     _id: string;
@@ -21,13 +25,13 @@ const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     password: { type: String },
     profileImage: { type: String },
-    userType: { type: String, default: 'employee' },
+    userType: { type: Number, default: 'employee' },
     marinaId: { type: mongoose.Schema.Types.ObjectId, ref: 'marinas' }
 });
 
 userSchema.methods.generateAuthToken = function () {
     const user = this;
-    const token = jwt.sign({ _id: user._id.toString() }, 'privatekey', { expiresIn: '7d' });
+    const token = jwt.sign({ _id: user._id.toString() }, config.jwt.key, { expiresIn: '7d' });
     return token;
 };
 

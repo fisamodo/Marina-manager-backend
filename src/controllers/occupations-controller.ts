@@ -9,8 +9,6 @@ export class OccupationsController {
     getAllOccupationsForMarina() {
         return asyncMiddleware(async (req: Request, res: Response) => {
             try {
-                const { marinaId } = req.params;
-                console.log(marinaId);
                 return res.status(200).send({});
             } catch (error) {
                 return res.status(500).send({ message: 'Internal server error' });

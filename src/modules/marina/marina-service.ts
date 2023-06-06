@@ -1,10 +1,6 @@
 import { IOccupations } from '../occupations/occupations-model';
 import { BoatType, IMarina } from './marina-model';
 
-interface IOccupancyStats {
-    amount: number;
-    boatType: BoatType;
-}
 class MarinaService {
     calculateOccupancyForMarina = (occupancy: IOccupations[], marina, isForClient: boolean) => {
         const speedBoatAmount = occupancy.filter((occupation) => occupation.boatType === BoatType.SPEED_BOAT).length;

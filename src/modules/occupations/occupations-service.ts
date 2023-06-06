@@ -1,17 +1,14 @@
-interface IDropdownOption {
-    label: string;
-    value: any;
-}
+import { IMarina } from '../marina/marina-model';
+import { BoatType, IOccupancy, IOccupationDropdownOption, IOccupations } from './occupations-model';
 
 class OccupationsService {
-    extractBoatTypeFromDropdownOption = (boatType: IDropdownOption) => {
+    extractBoatTypeFromDropdownOption = (boatType: IOccupationDropdownOption) => {
         return boatType.value;
     };
 
-    checkIfOccupationIsPossible = (marina, occupancy, occupation) => {
-        const boatType = occupation.boatType;
+    checkIfOccupationIsPossible = (marina: IMarina | any, occupancy: IOccupancy[], boatType: BoatType) => {
+        const currentOccupancyState = occupancy.find((occupancyCondition) => occupancyCondition.boatType === boatType)!;
 
-        const currentOccupancyState = occupancy.find((occupancyCondition) => occupancyCondition.boatType === boatType.value);
         return currentOccupancyState;
     };
 }

@@ -12,16 +12,19 @@ export function checkIfMarinaOccupationCreationIsPossible() {
     return asyncMiddleware(async (req: Request, res: Response) => {
         try {
             const { occupation } = req.body;
+
             const marina = await marinaRepository.findById(occupation.marinaId);
             const occupations = await occupationsRepository.find({ marinaId: marina?._id });
-            const occupancy = marinaService.calculateOccupancyForMarina(occupations, marina, false);
-            const currentOccupancyState = occupationsService.checkIfOccupationIsPossible(marina, occupancy, occupation);
 
+            const occupancy = marinaService.calculateOccupancyForMarina(occupations, marina, false);
+            const boatType = occupationsService.extractBoatTypeFromDropdownOption(occupation.boatType);
+            const currentOccupancyState = occupationsService.checkIfOccupationIsPossible(marina, occupancy, boatType);
+            console.log('Here? : ', currentOccupancyState);
             if (currentOccupancyState.amount === currentOccupancyState.maxAmount) {
-                throw new Error('Marina occupation is not available for current entry');
+                return res.status(422).send({ message: 'Maximum amount surpassed' });
             }
         } catch (error) {
-            throw new Error('Marina occupation is not available for current entry');
+            return res.status(500).send({ message: 'Internal server error' });
         }
     });
 }
