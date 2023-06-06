@@ -19,7 +19,6 @@ export function checkIfMarinaOccupationCreationIsPossible() {
             const occupancy = marinaService.calculateOccupancyForMarina(occupations, marina, false);
             const boatType = occupationsService.extractBoatTypeFromDropdownOption(occupation.boatType);
             const currentOccupancyState = occupationsService.checkIfOccupationIsPossible(marina, occupancy, boatType);
-            console.log('Here? : ', currentOccupancyState);
             if (currentOccupancyState.amount === currentOccupancyState.maxAmount) {
                 return res.status(422).send({ message: 'Maximum amount surpassed' });
             }

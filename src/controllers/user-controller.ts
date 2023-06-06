@@ -53,7 +53,6 @@ export class UserController {
 
     verifyUser() {
         return asyncMiddleware(async (req: Request, res: Response) => {
-            console.log('Here now');
             try {
                 const { token } = req.cookies || {};
 
