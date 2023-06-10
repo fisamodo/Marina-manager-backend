@@ -6,6 +6,8 @@ How to start:
 .env file is required to start
 Run "npm i"
 Run "npm run start"
+
+
 About the project:
 
 Repository pattern - Used to handle abstraction over data storage, check files that end in "...-repository.ts". It's used to keep the code structured and separate the data access logic from my app logic.
